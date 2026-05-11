@@ -1,0 +1,27 @@
+# Test fixture — small, self-contained config used by CLI tests.
+# Real example configs live under config/examples/.
+company:
+  name: Acme Fintech
+  cta_url: https://acme.example.com/get-started
+  cta_text: See your loan options
+  brand_colors:
+    primary: "#1a365d"
+    accent: "#e53e3e"
+
+content:
+  industry: fintech
+  keywords:
+    - small business loans
+    - SBA loans
+    - interest rates
+  sources:
+    rss_feeds: []  # tests inject feeds or use scan_local_feed
+  date_range_days: 7
+  min_relevance_score: 0
+  max_articles_per_run: 5
+
+publishing:
+  output_dir: ./content/blog
+  canonical_base: https://acme.example.com
+  nextjs:
+    image_dir: public/images/blog

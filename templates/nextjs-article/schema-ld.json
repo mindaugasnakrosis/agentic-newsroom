@@ -1,0 +1,34 @@
+{
+  "_comment": "Reference shape for the JSON-LD object that publisher.py builds and embeds in MDX frontmatter as `jsonLd`. This file is documentation, not a runtime template — the actual object is built in Python so we can keep it programmatically validatable. If you're customizing what goes into JSON-LD, edit publisher.build_jsonld() and update this file in lockstep so it stays an honest reference.",
+  "@context": "https://schema.org",
+  "@type": "Article | NewsArticle | BlogPosting",
+  "headline": "<HEADLINE — same as MDX title, ≤60 chars>",
+  "description": "<META DESCRIPTION — ≤155 chars>",
+  "datePublished": "<YYYY-MM-DD>",
+  "dateModified": "<YYYY-MM-DD>",
+  "author": {
+    "@type": "Organization",
+    "name": "<COMPANY NAME>",
+    "url": "<COMPANY URL — derived from cta_url's origin if no explicit url is set>"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "<COMPANY NAME>",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "<COMPANY LOGO URL — only emitted if company.logo_path is set>"
+    }
+  },
+  "image": "<OG IMAGE PATH — public path, e.g. /images/blog/<slug>-og.png>",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "<CANONICAL URL — built from publishing.canonical_base + slug>"
+  },
+  "keywords": ["<keyword 1>", "<keyword 2>", "..."],
+  "isBasedOn": {
+    "@type": "CreativeWork",
+    "url": "<SOURCE NEWS URL>",
+    "name": "<SOURCE TITLE>",
+    "publisher": "<SOURCE PUBLISHER>"
+  }
+}

@@ -1,0 +1,66 @@
+# Example config: D2C ecommerce platform for mid-market brands.
+# Use as a starting point — replace company details with your own.
+
+company:
+  name: "Outpost Commerce"
+  industry: "ecommerce technology"
+  products:
+    - "headless commerce platform"
+    - "subscription billing engine"
+    - "shopper analytics"
+  audience: "VPs of ecommerce and growth at $20M-$200M D2C brands"
+  tone: "operator-to-operator, data-driven, no fluff. Numbers always cited."
+  expertise_areas:
+    - "checkout conversion optimization"
+    - "subscription retention"
+    - "Shopify migration economics"
+    - "post-iOS14 attribution"
+    - "marketplace vs. owned channel mix"
+  cta_url: "https://outpost.example.com/get-a-quote"
+  cta_text: "See a live demo on your store"
+  brand_colors:
+    primary: "#111827"      # near-black
+    accent: "#f97316"       # orange
+  logo_path: null
+
+content:
+  keywords:
+    - "ecommerce conversion"
+    - "Shopify"
+    - "headless commerce"
+    - "subscription churn"
+    - "iOS attribution"
+    - "BNPL"
+    - "DTC margins"
+    - "marketplace fees"
+  sources:
+    rss_feeds:
+      # Daily ecommerce trade press — heaviest coverage.
+      - "https://www.retaildive.com/feeds/news/"
+      - "https://www.modernretail.co/feed/"
+      - "https://digiday.com/feed/"
+      # Marketing Brew covers performance marketing + attribution stories.
+      - "https://www.marketingbrew.com/feed"
+      # Reuters retail tag — wider business-press hooks (earnings, M&A).
+      - "https://www.reuters.com/arc/outboundfeeds/category-feed/?outputType=xml&category=business/retail-consumer"
+    web_search_queries:
+      - "Shopify earnings"
+      - "DTC brand margins news"
+      - "BNPL regulation update"
+  max_articles_per_run: 3
+  # Retail trade press headlines reliably hit ecommerce keywords, so the
+  # default 60 works. If you find scans returning 5+ candidates routinely,
+  # raise to 65 to keep the bar high.
+  min_relevance_score: 60
+  date_range_days: 7
+
+publishing:
+  output_dir: "./content/blog"
+  format: "mdx"
+  git:
+    enabled: true
+    branch_prefix: "content/"
+    auto_pr: true
+  nextjs:
+    content_dir: "src/content/blog"
+    image_dir: "public/images/blog"

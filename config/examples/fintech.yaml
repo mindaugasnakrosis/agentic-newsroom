@@ -1,0 +1,60 @@
+# Example config: small business fintech lender.
+# Use as a starting point — replace company details with your own.
+
+company:
+  name: "Acme Fintech"
+  industry: "financial technology"
+  products:
+    - "small business loans"
+    - "credit lines"
+    - "invoice factoring"
+  audience: "small business owners with $500K-$10M annual revenue"
+  tone: "authoritative but accessible, no jargon"
+  expertise_areas:
+    - "SMB lending"
+    - "cash flow management"
+    - "business growth"
+    - "credit underwriting"
+  cta_url: "https://acmefintech.com/apply"
+  cta_text: "See your rate in 60 seconds"
+  brand_colors:
+    primary: "#1a365d"
+    accent: "#e53e3e"
+  logo_path: null
+
+content:
+  keywords:
+    - "interest rates"
+    - "SBA loans"
+    - "small business funding"
+    - "Fed rate decision"
+    - "business credit"
+    - "working capital"
+    - "invoice factoring"
+  sources:
+    rss_feeds:
+      - "https://finance.yahoo.com/news/rssindex"
+      - "https://feeds.bloomberg.com/markets/news.rss"
+      - "https://www.federalreserve.gov/feeds/press_all.xml"
+    web_search_queries:
+      - "small business lending news"
+      - "Fed interest rate decision"
+      - "SMB credit conditions"
+  max_articles_per_run: 3
+  # Tuned against live Bloomberg/Fed/Yahoo feeds: tier-1 source + same-week
+  # publication alone scores ~45, so 50 is the floor that requires at least
+  # one keyword hit on top of source/recency. Raise to 65+ once you've added
+  # enough niche RSS feeds that headlines reliably contain your keywords.
+  min_relevance_score: 50
+  date_range_days: 7
+
+publishing:
+  output_dir: "./content/blog"
+  format: "mdx"
+  git:
+    enabled: true
+    branch_prefix: "content/"
+    auto_pr: true
+  nextjs:
+    content_dir: "src/content/blog"
+    image_dir: "public/images/blog"

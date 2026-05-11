@@ -1,0 +1,46 @@
+# Python build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test + coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Type-checking
+.mypy_cache/
+.ruff_cache/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Editor noise
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local Claude Code state (per-machine settings)
+.claude/
+
+# content-engine run outputs (per-article working dirs)
+runs/
+
+# Smoke-test artifacts from the README walkthrough
+smoke-out/
+smoke.yaml
+preview.html
+
+# Anything starting with `tmp-` is treated as scratch
+tmp-*/

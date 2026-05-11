@@ -1,0 +1,65 @@
+# Example config: clinical workflow SaaS for mid-market hospital systems.
+# Use as a starting point — replace company details with your own.
+
+company:
+  name: "Mendel Health"
+  industry: "healthcare technology"
+  products:
+    - "clinical workflow automation"
+    - "EHR integration platform"
+    - "care coordination software"
+  audience: "CIOs, CMIOs, and clinical operations leaders at 200-1000 bed hospitals"
+  tone: "credible and clinically literate, no marketing hype, plain English on regulatory topics"
+  expertise_areas:
+    - "EHR interoperability"
+    - "HIPAA-compliant data exchange"
+    - "clinician burnout and documentation burden"
+    - "value-based care operations"
+    - "FHIR and HL7 standards"
+  cta_url: "https://mendelhealth.example.com/demo"
+  cta_text: "Book a 30-minute demo"
+  brand_colors:
+    primary: "#0b3d91"      # deep clinical blue
+    accent: "#14b8a6"       # teal
+  logo_path: null
+
+content:
+  keywords:
+    - "EHR interoperability"
+    - "clinician burnout"
+    - "HIPAA compliance"
+    - "FHIR API"
+    - "prior authorization"
+    - "value-based care"
+    - "clinical documentation"
+    - "ONC rule"
+  sources:
+    rss_feeds:
+      # Trade press — broad clinical/health-IT coverage.
+      - "https://www.healthcareitnews.com/home/feed"
+      - "https://www.modernhealthcare.com/feed"
+      - "https://www.fiercehealthcare.com/rss/xml"
+      # STAT News covers policy + biotech; useful for value-based-care hooks.
+      - "https://www.statnews.com/feed/"
+      # HHS press releases — primary source for CMS/ONC rule changes.
+      - "https://www.hhs.gov/about/news/rss.xml"
+    web_search_queries:
+      - "ONC interoperability rule update"
+      - "CMS prior authorization final rule"
+      - "FHIR API mandate hospitals"
+  max_articles_per_run: 3
+  # Healthcare trade press is reliably on-topic, so the default 60 works
+  # well here without dropping to 50 the way the fintech example does.
+  min_relevance_score: 60
+  date_range_days: 7
+
+publishing:
+  output_dir: "./content/blog"
+  format: "mdx"
+  git:
+    enabled: true
+    branch_prefix: "content/"
+    auto_pr: true
+  nextjs:
+    content_dir: "src/content/blog"
+    image_dir: "public/images/blog"

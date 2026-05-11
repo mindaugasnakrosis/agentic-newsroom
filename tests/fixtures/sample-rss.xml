@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Sample Finance Wire</title>
+    <link>https://example.com/finance</link>
+    <description>Fixture feed for content-engine tests.</description>
+    <item>
+      <title>Fed cuts interest rates by 25bp, signals further easing</title>
+      <link>https://example.com/finance/fed-cuts-rates-2026-05</link>
+      <description>The Federal Reserve cut its benchmark interest rate by 25 basis points on Wednesday, the first move since the pivot earlier this year, citing softening labor markets and easing inflation. Small business lending conditions are expected to improve.</description>
+      <pubDate>Wed, 06 May 2026 14:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>SBA loan approvals climb 18% in Q1 amid easier credit</title>
+      <link>https://example.com/finance/sba-loans-q1-2026</link>
+      <description>Small Business Administration loan approvals jumped 18% year-over-year in the first quarter, driven by improved working capital demand and steady SMB confidence.</description>
+      <pubDate>Mon, 04 May 2026 09:30:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Quarterly earnings: Tech giant posts record buyback</title>
+      <link>https://example.com/finance/tech-buyback-2026</link>
+      <description>A large-cap tech company announced a $90B buyback program alongside its quarterly results.</description>
+      <pubDate>Tue, 05 May 2026 21:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Old news from last year about cash flow management</title>
+      <link>https://example.com/finance/old-cashflow-piece</link>
+      <description>An evergreen piece on cash flow management for small business owners. Contains business credit and working capital advice.</description>
+      <pubDate>Mon, 06 Jan 2025 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

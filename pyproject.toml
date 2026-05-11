@@ -1,0 +1,46 @@
+[project]
+name = "content-engine"
+version = "0.1.0"
+description = "Multi-agent SEO content pipeline for Claude Code"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Mindaugas Nakrošis", email = "mindaugasm@intelme.ai" }]
+keywords = ["claude", "agents", "agentic", "seo", "content", "llm", "nextjs", "mdx"]
+
+[project.urls]
+Homepage = "https://github.com/mindaugasnakrosis/agentic-newsroom"
+Repository = "https://github.com/mindaugasnakrosis/agentic-newsroom"
+Issues = "https://github.com/mindaugasnakrosis/agentic-newsroom/issues"
+dependencies = [
+    "click>=8.0",
+    "pyyaml>=6.0",
+    "feedparser>=6.0",
+    "python-frontmatter>=1.0",
+    "jinja2>=3.0",
+    "matplotlib>=3.7",
+    "requests>=2.31",
+    "beautifulsoup4>=4.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+    "mypy>=1.5",
+]
+
+[project.scripts]
+content-engine = "content_engine.cli:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

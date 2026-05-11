@@ -1,0 +1,12 @@
+{
+  "name": "content-engine",
+  "version": "0.1.0",
+  "description": "Multi-agent SEO content pipeline that turns trending industry news into publish-ready Next.js articles",
+  "skills": ["skills/content-engine"],
+  "agents": [
+    "agents/news-scanner.md",
+    "agents/content-strategist.md",
+    "agents/asset-producer.md",
+    "agents/publisher.md"
+  ]
+}

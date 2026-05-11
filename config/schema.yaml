@@ -1,0 +1,52 @@
+# Content Engine Configuration Schema
+#
+# This is the authoritative reference for content-engine config files.
+# Copy this file to your project, rename it (e.g. acme.yaml), and customize.
+# All keys are required unless marked optional.
+
+# --- COMPANY ---------------------------------------------------------------
+# Identity, voice, and offerings. The content strategist agent uses every
+# field here to write articles that sound like they came from your team.
+company:
+  name: "Acme Co"                       # Brand name used in bylines and copy.
+  industry: "industry name"             # e.g. "financial technology"
+  products: []                          # List of products/services you sell.
+                                        # Strategist may reference these in CTAs.
+  audience: "who you sell to"           # One-line description. Be specific.
+  tone: "voice + style guidance"        # e.g. "authoritative but accessible"
+  expertise_areas: []                   # Topics where the company has authority.
+                                        # Drives the angle of analysis articles.
+  cta_url: "https://example.com/apply"  # Where the article CTA should link.
+  cta_text: "Get started"               # CTA button/link text.
+  brand_colors:
+    primary: "#000000"                  # Hex. Used in OG images and charts.
+    accent: "#ff0000"                   # Hex. Secondary brand color.
+  logo_path: null                       # Optional. Local path to a logo PNG/SVG
+                                        # used in OG images. null = no logo.
+
+# --- CONTENT ---------------------------------------------------------------
+# What to scan for and how aggressive to be.
+content:
+  keywords: []                          # SEO keywords + topical phrases.
+                                        # Used for relevance scoring and search.
+  sources:
+    rss_feeds: []                       # List of RSS/Atom URLs.
+    web_search_queries: []              # Optional. Queries the scanner can run
+                                        # via web search to widen the net.
+  max_articles_per_run: 3               # Cap on opportunities surfaced per run.
+  min_relevance_score: 60               # 0-100. Items below this are dropped.
+  date_range_days: 7                    # Optional. Only consider news within
+                                        # this many days of today.
+
+# --- PUBLISHING ------------------------------------------------------------
+# Where output lands and whether to commit it.
+publishing:
+  output_dir: "./content/blog"          # Where MDX + assets are written.
+  format: "mdx"                         # "mdx" or "md".
+  git:
+    enabled: false                      # If true, branch + commit + (optional) PR.
+    branch_prefix: "content/"           # Branch name = prefix + slug.
+    auto_pr: false                      # If true, open PR via gh CLI.
+  nextjs:
+    content_dir: "src/content/blog"     # Path inside the target Next.js repo.
+    image_dir: "public/images/blog"     # Image asset path inside the repo.

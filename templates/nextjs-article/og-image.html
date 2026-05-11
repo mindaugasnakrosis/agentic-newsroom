@@ -1,0 +1,105 @@
+<!--
+  OG image template — REFERENCE / UPGRADE PATH ONLY.
+
+  By default, content-engine renders OG images using matplotlib (see
+  content_engine.assets.render_og_image). That's the no-extra-deps path
+  and produces a perfectly serviceable 1200x630 PNG with a headline,
+  brand color, and accent bar.
+
+  When teams want richer typography (custom webfonts, ligatures, complex
+  layouts, logos as <img>) the upgrade path is:
+
+    1. Wire a headless-browser renderer into a small helper. Playwright
+       is the typical choice. Pseudocode:
+
+         from playwright.sync_api import sync_playwright
+         html = render_template("og-image.html", context={...})
+         with sync_playwright() as p:
+             browser = p.chromium.launch()
+             page = browser.new_page(viewport={"width": 1200, "height": 630})
+             page.set_content(html)
+             page.screenshot(path=out_path, full_page=False, omit_background=False)
+
+    2. Override `content_engine.assets.render_og_image` in your fork or
+       subclass it. The asset producer agent does not care which path
+       produces the file — it only checks that the OG asset exists and
+       has the right dimensions.
+
+  Template variables expected (Jinja-style, but any templating works):
+    {{ headline }}      — the article headline
+    {{ company_name }}  — bottom-right brand wordmark
+    {{ primary_color }} — hex, used as background
+    {{ accent_color }}  — hex, used for the left accent bar
+    {{ logo_url }}      — optional; absolute or data: URL
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>OG Image</title>
+  <style>
+    :root {
+      --primary: {{ primary_color }};
+      --accent: {{ accent_color }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1200px;
+      height: 630px;
+      background: var(--primary);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 80px 96px 80px 144px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .accent-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 24px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .headline {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      max-width: 960px;
+    }
+    .footer {
+      position: absolute;
+      bottom: 56px;
+      left: 144px;
+      right: 96px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 24px;
+      opacity: 0.85;
+    }
+    .footer img {
+      height: 36px;
+      width: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="accent-bar"></div>
+    <h1 class="headline">{{ headline }}</h1>
+    <div class="footer">
+      <span>{{ company_name }}</span>
+      {% if logo_url %}<img src="{{ logo_url }}" alt="" />{% endif %}
+    </div>
+  </div>
+</body>
+</html>
