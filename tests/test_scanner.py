@@ -14,6 +14,7 @@ from content_engine.scanner import (
     _seo_potential,
     _source_tier_score,
     load_config,
+    post_to_slack,
     scan,
     scan_local_feed,
 )
@@ -124,6 +125,77 @@ def test_scan_respects_min_relevance_score(fintech_config):
     fintech_config["content"]["min_relevance_score"] = 95  # impossibly high
     items = scan(fintech_config)
     assert items == []
+
+
+class _StubResponse:
+    def __init__(self, status_code: int = 200):
+        self.status_code = status_code
+
+
+def test_post_to_slack_sends_expected_payload(monkeypatch):
+    calls: list[dict] = []
+
+    def fake_post(url: str, json: dict, timeout: int):
+        calls.append({"url": url, "json": json, "timeout": timeout})
+        return _StubResponse(200)
+
+    monkeypatch.setattr("content_engine.scanner.requests.post", fake_post)
+
+    cands = [
+        Candidate(
+            title="Fed cuts rates",
+            source="Reuters",
+            url="https://reuters.example/x",
+            published_date="2026-05-06",
+            summary="",
+            relevance_score=78,
+            seo_potential="high",
+            suggested_angle="",
+        )
+    ]
+    ok = post_to_slack("https://hooks.slack.com/services/X/Y/Z", cands, config_name="fintech")
+    assert ok is True
+    assert len(calls) == 1
+    assert calls[0]["url"] == "https://hooks.slack.com/services/X/Y/Z"
+    payload_text = calls[0]["json"]["text"]
+    assert "fintech" in payload_text
+    assert "78" in payload_text  # score appears in the digest
+    assert "Fed cuts rates" in payload_text
+    assert "reuters.example/x" in payload_text
+
+
+def test_post_to_slack_handles_empty_candidates(monkeypatch):
+    captured: list[dict] = []
+
+    def fake_post(url, json, timeout):
+        captured.append(json)
+        return _StubResponse(200)
+
+    monkeypatch.setattr("content_engine.scanner.requests.post", fake_post)
+    ok = post_to_slack("https://hooks.slack.com/services/X/Y/Z", [], config_name="fintech")
+    assert ok is True
+    assert "no candidates" in captured[0]["text"].lower()
+
+
+def test_post_to_slack_returns_false_on_http_error(monkeypatch):
+    monkeypatch.setattr(
+        "content_engine.scanner.requests.post",
+        lambda *a, **kw: _StubResponse(500),
+    )
+    ok = post_to_slack("https://hooks.slack.com/services/X/Y/Z", [], config_name="x")
+    assert ok is False
+
+
+def test_post_to_slack_swallows_network_errors(monkeypatch):
+    import requests
+
+    def boom(*args, **kwargs):
+        raise requests.ConnectionError("network down")
+
+    monkeypatch.setattr("content_engine.scanner.requests.post", boom)
+    # Must not raise; must return False.
+    ok = post_to_slack("https://hooks.slack.com/services/X/Y/Z", [], config_name="x")
+    assert ok is False
 
 
 def test_candidate_dataclass_fields():

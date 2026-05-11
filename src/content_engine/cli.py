@@ -84,20 +84,44 @@ def cli() -> None:
     default="json",
     show_default=True,
 )
-def cmd_scan(config_path: str, output: str) -> None:
-    """Score RSS feeds and emit ranked candidates."""
+@click.option(
+    "--notify-slack",
+    "notify_slack",
+    envvar="SLACK_WEBHOOK_URL",
+    default=None,
+    help=(
+        "Slack incoming-webhook URL. Top candidates are POSTed there as a "
+        "formatted message. Can also be set via the SLACK_WEBHOOK_URL env var "
+        "(useful for cron). Failures are non-fatal."
+    ),
+)
+def cmd_scan(config_path: str, output: str, notify_slack: str | None) -> None:
+    """Score RSS feeds and emit ranked candidates.
+
+    Non-interactive — safe to schedule via cron or GitHub Actions. Use
+    --notify-slack (or the SLACK_WEBHOOK_URL env var) to also POST the
+    top candidates to a Slack channel each morning.
+    """
     config = _load_yaml(config_path)
     candidates = scanner_mod.scan(config)
 
     if output == "json":
         _emit_json([asdict(c) for c in candidates])
-        return
-    if not candidates:
+    elif not candidates:
         click.echo("(no candidates above min_relevance_score)")
-        return
-    for c in candidates:
-        click.echo(f"[{c.relevance_score:>3}] {c.title}")
-        click.echo(f"        {c.source}  {c.published_date or '?'}  {c.url}")
+    else:
+        for c in candidates:
+            click.echo(f"[{c.relevance_score:>3}] {c.title}")
+            click.echo(f"        {c.source}  {c.published_date or '?'}  {c.url}")
+
+    if notify_slack:
+        ok = scanner_mod.post_to_slack(
+            notify_slack,
+            candidates,
+            config_name=Path(config_path).stem,
+        )
+        if not ok:
+            click.echo("warning: Slack notification failed (non-fatal).", err=True)
 
 
 # --- draft -----------------------------------------------------------------

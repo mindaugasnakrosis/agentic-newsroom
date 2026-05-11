@@ -269,10 +269,95 @@ The pipeline is interactive by design — you'll be prompted to pick a
 candidate after the scan, and Claude will pause before the publisher
 runs so you can review the draft.
 
+## Schedule the morning scan
+
+The `scan` stage is fully non-interactive — it fetches feeds, scores
+them, and writes either JSON or a table. Wire it into cron, a systemd
+timer, or a GitHub Actions schedule to get a daily candidate digest in
+your inbox / Slack each morning.
+
+Publish stays interactive on purpose — see [Why publish stays
+interactive](#why-publish-stays-interactive) below.
+
+### Slack digest via webhook
+
+```bash
+export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/XXX/YYY/ZZZ"
+content-engine scan --config config/examples/fintech.yaml --output table
+```
+
+`content-engine scan` reads `SLACK_WEBHOOK_URL` from the environment and
+POSTs a formatted digest of the top candidates. You can also pass
+`--notify-slack <url>` explicitly. Slack failures are non-fatal (the
+scheduled job still exits 0), so a Slack outage won't poison your
+morning.
+
+### cron
+
+Drop this into your crontab (`crontab -e`). Every weekday at 7:00 local
+time, scan the fintech config and post the top candidates to Slack:
+
+```cron
+0 7 * * 1-5  cd /path/to/agentic-newsroom && \
+  SLACK_WEBHOOK_URL="https://hooks.slack.com/services/XXX/YYY/ZZZ" \
+  /path/to/.venv/bin/content-engine scan \
+    --config config/examples/fintech.yaml \
+    --output json > "logs/scan-$(date +\%F).json"
+```
+
+The log file under `logs/` gives you an audit trail of what was surfaced
+each day, useful for tuning `min_relevance_score` and your keyword list.
+
+### GitHub Actions
+
+`.github/workflows/morning-scan.yml`:
+
+```yaml
+name: morning-scan
+
+on:
+  schedule:
+    - cron: "0 7 * * 1-5"   # 07:00 UTC, weekdays
+  workflow_dispatch: {}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -e .
+      - run: content-engine scan --config config/examples/fintech.yaml --output table
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+```
+
+Add `SLACK_WEBHOOK_URL` as a repo secret. The Action runs without
+human input and posts to Slack.
+
+### Why publish stays interactive
+
+The scan stage delivers ranked candidates. The strategist, asset
+producer, and publisher stages stay interactive on purpose:
+
+- **Picking the candidate** requires judgment the scoring rubric can't
+  capture (saturation, brand fit, what you already said about the topic
+  last week).
+- **Reviewing the draft** is the place where context the agents don't
+  have catches up with the output — corrections, tone tweaks, decisions
+  about what to leave out.
+- **Hitting publish** is irreversible-ish. A human gate is the cheapest
+  defense against an agent confidently shipping something wrong.
+
+Reactive content tied to real news, written by a system that can
+produce 30 articles a day, is exactly the kind of system that needs a
+human in the loop. Schedule the scan. Drive the rest yourself.
+
 ## CLI reference
 
 ```
-content-engine scan      --config <cfg> [--output json|table]
+content-engine scan      --config <cfg> [--output json|table] [--notify-slack <webhook>]
 content-engine draft     prefetch --url <url> [--out <path>]
                          validate --draft <path>
                          slug "Some headline"

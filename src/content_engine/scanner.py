@@ -209,6 +209,43 @@ def _fetch_feed(url: str) -> Any:
     return feedparser.parse(resp.content)
 
 
+SLACK_TIMEOUT_SECONDS = 10
+
+
+def post_to_slack(
+    webhook_url: str,
+    candidates: list[Candidate],
+    config_name: str | None = None,
+) -> bool:
+    """POST a formatted candidate digest to a Slack incoming webhook.
+
+    Returns True on a 2xx response, False otherwise. Failures are swallowed
+    so a flaky Slack outage cannot fail a scheduled scan.
+    """
+    label = f" ({config_name})" if config_name else ""
+    if not candidates:
+        text = f":newspaper: *content-engine*{label} — no candidates cleared the relevance threshold."
+    else:
+        lines = [f":newspaper: *content-engine*{label} — top {len(candidates)} candidates"]
+        for i, c in enumerate(candidates, start=1):
+            lines.append(f"*{i}.* `[{c.relevance_score:>3}]` <{c.url}|{c.title}>")
+            meta = f"_{c.source}_"
+            if c.published_date:
+                meta += f" · {c.published_date}"
+            lines.append(f"    {meta}")
+        text = "\n".join(lines)
+
+    try:
+        resp = requests.post(
+            webhook_url,
+            json={"text": text},
+            timeout=SLACK_TIMEOUT_SECONDS,
+        )
+        return 200 <= resp.status_code < 300
+    except requests.RequestException:
+        return False
+
+
 def scan(config: dict[str, Any]) -> list[Candidate]:
     """Run a full scan over the config and return ranked Candidates.
 
