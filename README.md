@@ -1,10 +1,12 @@
-# agentic-newsroom
+# agentic-newsroom 📰
 
-A Claude Code plugin that turns trending industry news into SEO-optimized,
-publish-ready Next.js MDX articles via four specialist agents and a
-deterministic Python CLI. The package and CLI are named `content-engine`;
-the repository is `agentic-newsroom` to reflect the multi-agent newsroom
-architecture.
+> **AI agents that read industry news and write the articles for you.** A four-agent Claude Code pipeline that scans RSS feeds every morning, picks the stories worth writing about, and drafts publish-ready Next.js MDX articles — with SEO metadata, social images, and a pull request. A human reviews the draft before anything ships.
+
+![license](https://img.shields.io/badge/license-MIT-orange) ![python](https://img.shields.io/badge/python-3.10+-blue) ![tests](https://img.shields.io/badge/tests-93%20passing-brightgreen) ![built with](https://img.shields.io/badge/built%20with-Claude%20Code-d97757) ![status](https://img.shields.io/badge/status-active-success)
+
+![Four-agent pipeline diagram: news-scanner ranks RSS feeds, content-strategist writes original analysis, asset-producer generates the OG image and charts, publisher renders MDX with JSON-LD and opens a git PR. Human review gates between scanner-strategist and strategist-publisher. A Python CLI underneath handles all deterministic boundary work.](examples/launch/architecture.png)
+
+The package and CLI are named `content-engine`; the repository is `agentic-newsroom` to reflect the multi-agent newsroom architecture.
 
 The agents do the judgment (which news matters, what angle to take, what
 to write, when to draw a chart). The CLI does the boundary work (fetch
